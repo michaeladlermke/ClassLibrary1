@@ -1,0 +1,55 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "/Users/michaeladler/repos/ClassLibrary1/ClassLibrary1.csproj",
+    "projectName": "ClassLibrary1",
+    "projectPath": "/Users/michaeladler/repos/ClassLibrary1/ClassLibrary1.csproj",
+    "outputPath": "/Users/michaeladler/repos/ClassLibrary1/obj/",
+    "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+    ],
+    "originalTargetFrameworks": [
+      "netstandard2.0"
+    ],
+    "frameworks": {
+      "netstandard2.0": {
+        "projectReferences": {}
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netstandard2.0": {
+      "dependencies": {
+        "AWSSDK.Extensions.NETCore.Setup": {
+          "target": "Package",
+          "version": "[3.3.5, )"
+        },
+        "Microsoft.AspNet.Providers.Core": {
+          "target": "Package",
+          "version": "[1.2.0, )"
+        },
+        "Microsoft.AspNetCore.Mvc": {
+          "target": "Package",
+          "version": "[2.2.0-preview3-35497, )"
+        },
+        "NETStandard.Library": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.0.3, )",
+          "autoReferenced": true
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}

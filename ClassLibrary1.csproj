@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Reference Include="ClassLibrary1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>bin\Debug\netstandard2.0\ClassLibrary1.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.5" />
+      <PackageReference Include="Microsoft.AspNet.Providers.Core" Version="1.2.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0-preview3-35497" />
+    </ItemGroup>
+
+</Project>

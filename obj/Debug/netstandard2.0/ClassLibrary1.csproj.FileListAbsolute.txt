@@ -1,0 +1,8 @@
+/Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.csprojAssemblyReference.cache
+/Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.csproj.CoreCompileInputs.cache
+/Users/michaeladler/repos/ClassLibrary1/bin/Debug/netstandard2.0/ClassLibrary1.deps.json
+/Users/michaeladler/repos/ClassLibrary1/bin/Debug/netstandard2.0/ClassLibrary1.dll
+/Users/michaeladler/repos/ClassLibrary1/bin/Debug/netstandard2.0/ClassLibrary1.pdb
+/Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.dll
+/Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.pdb
+/Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.csproj.CopyComplete
