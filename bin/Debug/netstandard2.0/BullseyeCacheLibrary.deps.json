@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v2.0": {},
     ".NETStandard,Version=v2.0/": {
-      "ClassLibrary1/1.0.0": {
+      "BullseyeCacheLibrary/1.0.0": {
         "dependencies": {
           "AWSSDK.Extensions.NETCore.Setup": "3.3.5",
           "Microsoft.AspNet.Providers.Core": "1.2.0",
@@ -16,7 +16,7 @@
           "ClassLibrary1": "1.0.0.0"
         },
         "runtime": {
-          "ClassLibrary1.dll": {}
+          "BullseyeCacheLibrary.dll": {}
         }
       },
       "AWSSDK.Core/3.3.13.3": {
@@ -1996,7 +1996,7 @@
     }
   },
   "libraries": {
-    "ClassLibrary1/1.0.0": {
+    "BullseyeCacheLibrary/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

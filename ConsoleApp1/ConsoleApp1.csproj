@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ClassLibrary1.csproj" />
+      <ProjectReference Include="..\BullseyeCacheLibrary.csproj" />
     </ItemGroup>
 
 </Project>

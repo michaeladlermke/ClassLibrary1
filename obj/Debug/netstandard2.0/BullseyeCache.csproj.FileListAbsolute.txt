@@ -1,0 +1,9 @@
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\BullseyeCache.deps.json
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\BullseyeCache.dll
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\BullseyeCache.pdb
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\ClassLibrary1.pdb
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\BullseyeCache.csprojAssemblyReference.cache
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\BullseyeCache.csproj.CoreCompileInputs.cache
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\BullseyeCache.csproj.CopyComplete
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\BullseyeCache.dll
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\BullseyeCache.pdb

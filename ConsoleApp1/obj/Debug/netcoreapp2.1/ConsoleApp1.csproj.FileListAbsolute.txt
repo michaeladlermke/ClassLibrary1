@@ -12,3 +12,17 @@
 /Users/michaeladler/repos/ClassLibrary1/ConsoleApp1/obj/Debug/netcoreapp2.1/ConsoleApp1.pdb
 /Users/michaeladler/repos/ClassLibrary1/ConsoleApp1/obj/Debug/netcoreapp2.1/ConsoleApp1.AssemblyInfoInputs.cache
 /Users/michaeladler/repos/ClassLibrary1/ConsoleApp1/obj/Debug/netcoreapp2.1/ConsoleApp1.AssemblyInfo.cs
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\ConsoleApp1.deps.json
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\ConsoleApp1.runtimeconfig.json
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\ConsoleApp1.runtimeconfig.dev.json
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\ConsoleApp1.dll
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\ConsoleApp1.pdb
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.csprojAssemblyReference.cache
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.csproj.CoreCompileInputs.cache
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.AssemblyInfoInputs.cache
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.AssemblyInfo.cs
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.csproj.CopyComplete
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.dll
+C:\repos\ClassLibrary1\ConsoleApp1\obj\Debug\netcoreapp2.1\ConsoleApp1.pdb
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\BullseyeCacheLibrary.dll
+C:\repos\ClassLibrary1\ConsoleApp1\bin\Debug\netcoreapp2.1\BullseyeCacheLibrary.pdb

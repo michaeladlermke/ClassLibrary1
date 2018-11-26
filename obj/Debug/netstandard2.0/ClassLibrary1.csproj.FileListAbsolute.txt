@@ -6,3 +6,11 @@
 /Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.dll
 /Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.pdb
 /Users/michaeladler/repos/ClassLibrary1/obj/Debug/netstandard2.0/ClassLibrary1.csproj.CopyComplete
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\ClassLibrary1.deps.json
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\ClassLibrary1.dll
+C:\repos\ClassLibrary1\bin\Debug\netstandard2.0\ClassLibrary1.pdb
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\ClassLibrary1.csprojAssemblyReference.cache
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\ClassLibrary1.csproj.CoreCompileInputs.cache
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\ClassLibrary1.csproj.CopyComplete
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\ClassLibrary1.dll
+C:\repos\ClassLibrary1\obj\Debug\netstandard2.0\ClassLibrary1.pdb
