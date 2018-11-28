@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System;
 
 namespace BullseyeCacheLibrary
-// make the device an interface called IBullseyeObject with an id as the key
-
 {
-    public class BullseyeCacheLibrary
+    public class BullseyeCache
     {
         public MemoryCache Cache { get; set; }
-        
-        public BullseyeCacheLibrary()
+        private Action SetupAction;
+        private Action UpdateAction;
+        private Action EvictionAction;
+
+
+        public BullseyeCache()
         {
             // NOTES TO FIX:
             // take in two call back a pre and a post and a remove callback 
@@ -21,33 +23,37 @@ namespace BullseyeCacheLibrary
             });
         }
 
-        public BullseyeCacheLibrary(Action preCallback, Action updateCallback, Action EvictionCallback)
+        public BullseyeCache(Action PreCallback, Action UpdateCallback, Action EvictionCallback)
         {
-            // NOTES TO FIX:
-            // take in two call back a pre and a post and a remove callback 
-            // in the setup and evict
+            SetupAction = PreCallback;
+            UpdateAction = UpdateCallback;
+            EvictionAction = EvictionCallback;
+            //SetupAction = new Action(PreCallback);
+            //UpdateAction = new Action(UpdateCallback);
+            //EvictionAction = new Action(EvictionCallback);
+
             Cache = new MemoryCache(new MemoryCacheOptions
-            {
-                SizeLimit = 1024
-            });
+                {
+                    SizeLimit = 1024
+                });
         }
 
         /// <summary>
         /// This function is a placeholder for a function call that happens after a device has been added to the cache
         /// </summary>
         /// <param name="device"> This is the supplied device added to the cache </param>
-        private void NewDeviceCallback(BullseyeDevice device)
+        private void NewDeviceCallback(IBullseyeDevice device)
         {
-            device.Setup();
+            SetupAction.Invoke();
         }
 
         /// <summary>
         /// This function is a placeholder for a function call that happens after a device has been updated in the cache
         /// </summary>
         /// <param name="device"> This is the supplied device updated in the cache </param>
-        private void UpdatedDeviceCallback(BullseyeDevice device)
+        private void UpdatedDeviceCallback(IBullseyeDevice device)
         {
-            device.Setup();
+            UpdateAction.Invoke();
         }
 
         /// <summary>
@@ -55,9 +61,9 @@ namespace BullseyeCacheLibrary
         /// </summary>
         /// <param name="device"> This is the supplied device removed from the cache </param>
         /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
-        private void RemovedDeviceCallback(BullseyeDevice device, EvictionReason reason)
+        private void RemovedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
         {
-            device.Evicted(reason);
+            EvictionAction.Invoke();
         }
 
         /// <summary>
@@ -78,7 +84,7 @@ namespace BullseyeCacheLibrary
         /// <param name="seconds"> Number of seconds for the object to remain in the cache </param>
         ///
         /// 
-        public void AddObject(BullseyeDevice device, int seconds)
+        public void AddObject(IBullseyeDevice device, int seconds)
         {
             string key = device.GetId();
             string info = device.GetDeviceInfo();
@@ -146,7 +152,7 @@ namespace BullseyeCacheLibrary
         /// </summary>
         /// <param name="device"> The object is a BullseyeDevice </param>
         /// <returns> This function returns the object payload. </returns>
-        public string GetObject(BullseyeDevice device)
+        public string GetObject(IBullseyeDevice device)
         {
             string key = device.GetId();
             return GetObject(key);
@@ -156,7 +162,7 @@ namespace BullseyeCacheLibrary
         /// This function is used to remove an object from the cache
         /// </summary>
         /// <param name="device"> Supplied device to be removed from the cache </param>
-        public void RemoveObject(BullseyeDevice device)
+        public void RemoveObject(IBullseyeDevice device)
         {
             var key = device.GetId();
             
@@ -189,7 +195,7 @@ namespace BullseyeCacheLibrary
         /// </summary>
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
         /// <param name="seconds"> This is the desired expiration time for the list of devices </param>
-        public void AddMultipleObjects(List<BullseyeDevice> list, int seconds)
+        public void AddMultipleObjects(List<IBullseyeDevice> list, int seconds)
         {
             foreach (var device in list)
             {
@@ -201,7 +207,7 @@ namespace BullseyeCacheLibrary
         /// This function checks the cache for a list of devices and returns if they exist in cache or not
         /// </summary>
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
-        public void CheckCacheForMultipleObjects(List<BullseyeDevice> list)
+        public void CheckCacheForMultipleObjects(List<IBullseyeDevice> list)
         {
             foreach (var device in list)
             {
@@ -211,43 +217,4 @@ namespace BullseyeCacheLibrary
 
     }
 
-    // class for a generic device object
-    public class BullseyeDevice
-    {
-        private string bullseyeId;
-        private string bullseyeDeviceInfo;
-
-        public BullseyeDevice(string id, string info)
-        {
-            bullseyeId = id;
-            bullseyeDeviceInfo = info;
-        }
-
-        public string GetId()
-        {
-            return bullseyeId;
-        }
-
-        public string GetDeviceInfo()
-        {
-            return bullseyeDeviceInfo;
-        }
-        
-        public string Setup()
-        {
-            var result = $"'{bullseyeId}':'{bullseyeDeviceInfo}' is being set up.";
-            Console.WriteLine("THINGS ARE BEING DONE BY THE DEVICE " + bullseyeId + " TO SET UP.");
-            
-            return result;
-        }
-
-        public string Evicted(EvictionReason reason)
-        {
-            var result = $"'{bullseyeId}':'{bullseyeDeviceInfo}' was evicted because: {reason}";
-            Console.WriteLine("THINGS ARE BEING DONE BY DEVICE " + bullseyeId + " TO CLOSE IT DOWN.");
-            
-            return result;
-        }
-
-    }
 }
