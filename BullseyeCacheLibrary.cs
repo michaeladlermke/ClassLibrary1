@@ -9,9 +9,19 @@ namespace BullseyeCacheLibrary
     public class BullseyeCacheLibrary
     {
         public MemoryCache Cache { get; set; }
-        public List<object> CacheContents = new List<object>();
         
         public BullseyeCacheLibrary()
+        {
+            // NOTES TO FIX:
+            // take in two call back a pre and a post and a remove callback 
+            // in the setup and evict
+            Cache = new MemoryCache(new MemoryCacheOptions
+            {
+                SizeLimit = 1024
+            });
+        }
+
+        public BullseyeCacheLibrary(Action preCallback, Action updateCallback, Action EvictionCallback)
         {
             // NOTES TO FIX:
             // take in two call back a pre and a post and a remove callback 
@@ -105,7 +115,6 @@ namespace BullseyeCacheLibrary
                 // cacheEntryOptions.Size = 1;
 
                 // Save data in cache.
-                CacheContents.Add(key); // probably dont need this....
                 Cache.Set(key, cacheEntry, cacheEntryOptions); // can get rid of the else and remove this from the if statement
             }
             else //not needed, move the set to outside the if statement
@@ -158,7 +167,6 @@ namespace BullseyeCacheLibrary
             else
             {
                 RemovedDeviceCallback(device, EvictionReason.Removed);  //won't need this
-                CacheContents.Remove(key);
                 Cache.Remove(key);
             }
         }
@@ -168,31 +176,12 @@ namespace BullseyeCacheLibrary
         /// </summary>
         public void RemoveAllObjects()
         {
-            CacheContents.Clear();
-            
-            // is there a cacce.removeall type function?
+            // is there a cache.removeall type function?
 
             Cache = new MemoryCache(new MemoryCacheOptions
             {
                 SizeLimit = 1024
             });
-        }
-
-        /// <summary>
-        /// Prints the contents of the entire cache to console
-        /// </summary>
-        public void ReturnAllObjectsInCache()
-        {
-            
-            Console.WriteLine("=========================");
-            Console.WriteLine("Current Cache Contents: ");
-            
-            foreach (string key in CacheContents)
-            {
-                Console.WriteLine(GetObject(key));
-            }
-            
-            Console.WriteLine("=========================");
         }
 
         /// <summary>

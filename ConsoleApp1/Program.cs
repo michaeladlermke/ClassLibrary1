@@ -35,7 +35,7 @@ namespace ConsoleApp1
 
             thing.AddMultipleObjects(DeviceList, 3);
             Console.WriteLine("New cache size after adding a list of devices : " + thing.BullseyeCacheCount());
-            thing.ReturnAllObjectsInCache();
+
             System.Threading.Thread.Sleep(1000);
             Console.WriteLine("Is Device05 in cache: " + thing.GetObject(dev05));
             Console.WriteLine("Is Device06 in cache: " + thing.GetObject(dev06));
@@ -71,10 +71,10 @@ namespace ConsoleApp1
             Console.WriteLine("New cache size after adding a third device : " + thing.BullseyeCacheCount());
             thing.AddObject(dev04, 16);
             Console.WriteLine("New cache size after adding a fourth device : " + thing.BullseyeCacheCount());
-            thing.ReturnAllObjectsInCache();
+
             thing.RemoveAllObjects();
             Console.WriteLine("New cache size after removing all of the devices : " + thing.BullseyeCacheCount());
-            thing.ReturnAllObjectsInCache();
+
             Console.WriteLine("Final cache size: " + thing.BullseyeCacheCount());
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");
@@ -94,10 +94,10 @@ namespace ConsoleApp1
             thing.AddObject(dev04, 16);
             Console.WriteLine("New cache size after adding a fourth device : " + thing.BullseyeCacheCount());
             
-            thing.ReturnAllObjectsInCache();
+
             thing.RemoveObject(dev04);
             Console.WriteLine("New cache size after removing the fourth device : " + thing.BullseyeCacheCount());
-            thing.ReturnAllObjectsInCache();
+
             Console.WriteLine("Current cache size: " + thing.BullseyeCacheCount());
 
             
