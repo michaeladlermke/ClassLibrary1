@@ -1,14 +1,13 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
 
 namespace BullseyeCacheLibrary
 {
     public class BullseyeDeviceHelper : IBullseyeDeviceHelper
     {
-        public Action StartUpAction { get => Startup; }
+        public Action StartUpAction => Startup;
 
-        public Action UpdateAction { get => Update; }
-        public Action EvictionAction { get => Evict; }
+        public Action UpdateAction => Update;
+        public Action EvictionAction => Evict;
 
         public void Startup()
         {

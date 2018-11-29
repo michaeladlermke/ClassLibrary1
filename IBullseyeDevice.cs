@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Extensions.Caching.Memory;
-
-namespace BullseyeCacheLibrary
+﻿namespace BullseyeCacheLibrary
 {
     public interface IBullseyeDevice
     {

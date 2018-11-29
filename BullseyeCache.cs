@@ -14,20 +14,17 @@ namespace BullseyeCacheLibrary
 
         public BullseyeCache()
         {
-            // NOTES TO FIX:
-            // take in two call back a pre and a post and a remove callback 
-            // in the setup and evict
             Cache = new MemoryCache(new MemoryCacheOptions
             {
                 SizeLimit = 1024
             });
         }
 
-        public BullseyeCache(Action PreCallback, Action UpdateCallback, Action EvictionCallback)
+        public BullseyeCache(Action preCallback, Action updateCallback, Action evictionCallback)
         {
-            SetupAction = PreCallback;
-            UpdateAction = UpdateCallback;
-            EvictionAction = EvictionCallback;
+            SetupAction = preCallback;
+            UpdateAction = updateCallback;
+            EvictionAction = evictionCallback;
             //SetupAction = new Action(PreCallback);
             //UpdateAction = new Action(UpdateCallback);
             //EvictionAction = new Action(EvictionCallback);
@@ -76,16 +73,13 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// This function is used to add an object to the cache
-        /// 
+        /// Add an object to the cache
         /// </summary>
-        /// <param name="key"> The object key </param>
-        /// <param name="info"> The payload for the object </param>
-        /// <param name="seconds"> Number of seconds for the object to remain in the cache </param>
-        ///
-        /// 
+        /// <param name="device"> This is a provided IBullseyeDevice </param>
+        /// <param name="seconds"> This is the number of seconds the device will remain in the cache </param>
         public void AddObject(IBullseyeDevice device, int seconds)
         {
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
             string key = device.GetId();
             string info = device.GetDeviceInfo();
             
@@ -137,6 +131,7 @@ namespace BullseyeCacheLibrary
         /// <returns> This function returns the object payload. </returns>
         public string GetObject(string key)
         {
+            if (key == null) throw new ArgumentNullException(nameof(key));
             if (!Cache.TryGetValue(key, out string cacheEntry))
             {
                 return "This object is not in cache.";
@@ -154,6 +149,7 @@ namespace BullseyeCacheLibrary
         /// <returns> This function returns the object payload. </returns>
         public string GetObject(IBullseyeDevice device)
         {
+            if (device == null) throw new ArgumentNullException(nameof(device));
             string key = device.GetId();
             return GetObject(key);
         }
@@ -164,6 +160,7 @@ namespace BullseyeCacheLibrary
         /// <param name="device"> Supplied device to be removed from the cache </param>
         public void RemoveObject(IBullseyeDevice device)
         {
+            if (device == null) throw new ArgumentNullException(nameof(device));
             var key = device.GetId();
             
             if (!Cache.TryGetValue(key, out string cacheEntry))
@@ -197,6 +194,8 @@ namespace BullseyeCacheLibrary
         /// <param name="seconds"> This is the desired expiration time for the list of devices </param>
         public void AddMultipleObjects(List<IBullseyeDevice> list, int seconds)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
             foreach (var device in list)
             {
                 AddObject(device, seconds);
@@ -209,6 +208,7 @@ namespace BullseyeCacheLibrary
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
         public void CheckCacheForMultipleObjects(List<IBullseyeDevice> list)
         {
+            if (list == null) throw new ArgumentNullException(nameof(list));
             foreach (var device in list)
             {
                 GetObject(device.GetId());
