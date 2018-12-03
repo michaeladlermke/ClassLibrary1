@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BullseyeCacheLibrary", "Bul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullseyeCacheLibraryTests", "..\BullseyeCacheLibraryTests\BullseyeCacheLibraryTests.csproj", "{8DA6841E-FDFE-4288-BB67-1E358AB997B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullseyeCacheTestProject", "..\BullseyeCacheTestProject\BullseyeCacheTestProject.csproj", "{453CB605-7A36-4438-A35F-4C1AB368FD4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8DA6841E-FDFE-4288-BB67-1E358AB997B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8DA6841E-FDFE-4288-BB67-1E358AB997B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8DA6841E-FDFE-4288-BB67-1E358AB997B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8DA6841E-FDFE-4288-BB67-1E358AB997B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

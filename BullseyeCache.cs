@@ -25,9 +25,6 @@ namespace BullseyeCacheLibrary
             SetupAction = preCallback;
             UpdateAction = updateCallback;
             EvictionAction = evictionCallback;
-            //SetupAction = new Action(PreCallback);
-            //UpdateAction = new Action(UpdateCallback);
-            //EvictionAction = new Action(EvictionCallback);
 
             Cache = new MemoryCache(new MemoryCacheOptions
                 {
@@ -90,7 +87,7 @@ namespace BullseyeCacheLibrary
                 string result;
 
                 // This is where a call to do something to prepare for the insertion of a new device into the cache would happen
-                NewDeviceCallback(device);
+                if(SetupAction != null) NewDeviceCallback(device);
                 
 
                 var cacheEntryOptions = new MemoryCacheEntryOptions()
@@ -105,7 +102,7 @@ namespace BullseyeCacheLibrary
 
                             //NOTE: NEED TO ADD AN OPTION FOR UPDATING A DEVICE AS A REASON
 
-                            RemovedDeviceCallback(device, reason);
+                            if(EvictionAction != null) RemovedDeviceCallback(device, reason);
                             result = $"'{evictedKey}':'{value}' was evicted because: {reason}";
                             Console.WriteLine(result);
 
@@ -120,7 +117,7 @@ namespace BullseyeCacheLibrary
             else //not needed, move the set to outside the if statement
             {
                 //this is what happens if the object to be added already exists and needs to be updated
-                UpdatedDeviceCallback(device);
+                if(UpdateAction != null) UpdatedDeviceCallback(device);
             }
         }
 
@@ -203,16 +200,23 @@ namespace BullseyeCacheLibrary
         }
         
         /// <summary>
-        /// This function checks the cache for a list of devices and returns if they exist in cache or not
+        /// This function checks the cache for a list of devices and returns a list of those devices that exist in the cache
         /// </summary>
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
-        public void CheckCacheForMultipleObjects(List<IBullseyeDevice> list)
+        public List<IBullseyeDevice> CheckCacheForMultipleObjects(List<IBullseyeDevice> list)
         {
+            List<IBullseyeDevice> foundDevices = new List<IBullseyeDevice>();
             if (list == null) throw new ArgumentNullException(nameof(list));
             foreach (var device in list)
             {
-                GetObject(device.GetId());
+                var key = device.Id;
+                if (Cache.TryGetValue(key, out string cacheEntry))
+                {
+                    foundDevices.Add(device);
+                }
             }
+
+            return foundDevices;
         }
 
     }
