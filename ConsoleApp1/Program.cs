@@ -25,10 +25,25 @@ namespace ConsoleApp1
             BullseyeDevice dev08 = new BullseyeDevice("device 08", "{ 08 some device info; device info here; }");
             BullseyeDevice dev09 = new BullseyeDevice("device 09", "{ 09 some device info; device info here; }");
             BullseyeDevice dev10 = new BullseyeDevice("device 10", "{ 10 some device info; device info here; }");
+            BullseyeDevice dev10Copy = new BullseyeDevice("device 10", "{ 10 some device info; device info here; }");
+
+
+            Console.WriteLine("Should be true: " + dev10.Equals(dev10Copy));
+            Console.WriteLine("Should be true: " + dev10.Id.Equals(dev10Copy.Id));
+            Console.WriteLine("Should be true: " + dev10.Payload.Equals(dev10Copy.Payload));
+            //Console.WriteLine("Should be true: " + (dev10 == dev10Copy));
+            Console.WriteLine("Should be false: " + dev09.Equals(dev10Copy));
+            //Console.WriteLine("Should be false: " + (dev09 == dev10Copy));
 
 
             List<IBullseyeDevice> deviceList = new List<IBullseyeDevice> {dev05, dev06, dev07};
 
+
+            testCache.AddMultipleObjects(deviceList, 3);
+            Console.WriteLine("New cache size after adding a list of devices : " + testCache.BullseyeCacheCount());
+
+            testCache.RemoveAllObjects();
+            Console.WriteLine("New cache size after removing all devices : " + testCache.BullseyeCacheCount());
 
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");

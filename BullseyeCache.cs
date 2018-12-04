@@ -1,15 +1,14 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BullseyeCacheLibrary
 {
     public class BullseyeCache
     {
-        public MemoryCache Cache { get; set; }
-        private Action SetupAction;
-        private Action UpdateAction;
-        private Action EvictionAction;
+        private readonly Action EvictionAction;
+        private readonly Action SetupAction;
+        private readonly Action UpdateAction;
 
 
         public BullseyeCache()
@@ -27,13 +26,15 @@ namespace BullseyeCacheLibrary
             EvictionAction = evictionCallback;
 
             Cache = new MemoryCache(new MemoryCacheOptions
-                {
-                    SizeLimit = 1024
-                });
+            {
+                SizeLimit = 1024
+            });
         }
 
+        public MemoryCache Cache { get; set; }
+
         /// <summary>
-        /// This function is a placeholder for a function call that happens after a device has been added to the cache
+        ///     This function is a placeholder for a function call that happens after a device has been added to the cache
         /// </summary>
         /// <param name="device"> This is the supplied device added to the cache </param>
         private void NewDeviceCallback(IBullseyeDevice device)
@@ -42,7 +43,7 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// This function is a placeholder for a function call that happens after a device has been updated in the cache
+        ///     This function is a placeholder for a function call that happens after a device has been updated in the cache
         /// </summary>
         /// <param name="device"> This is the supplied device updated in the cache </param>
         private void UpdatedDeviceCallback(IBullseyeDevice device)
@@ -51,7 +52,7 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// 
+        ///     This function is a placeholder for a function call that happens after a device has been removed from the cache
         /// </summary>
         /// <param name="device"> This is the supplied device removed from the cache </param>
         /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
@@ -61,7 +62,7 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// This function is just a way to return the number of items contained in the cache
+        ///     Return the number of items contained in the cache
         /// </summary>
         /// <returns>Returns a count of items in the cache</returns>
         public long BullseyeCacheCount()
@@ -70,113 +71,106 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// Add an object to the cache
+        ///     Add an object to the cache
         /// </summary>
         /// <param name="device"> This is a provided IBullseyeDevice </param>
         /// <param name="seconds"> This is the number of seconds the device will remain in the cache </param>
         public void AddObject(IBullseyeDevice device, int seconds)
         {
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
-            string key = device.GetId();
-            string info = device.GetDeviceInfo();
-            
+            var key = device.GetId();
+
             if (!Cache.TryGetValue(key, out string cacheEntry))
             {
-                // Key not in cache, so get data.
-                cacheEntry = info;
-                string result;
-
-                // This is where a call to do something to prepare for the insertion of a new device into the cache would happen
-                if(SetupAction != null) NewDeviceCallback(device);
-                
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    // Set cache entry size by extension method.
-                    .SetSize(1)
-                    // Keep in cache for this time, reset time if accessed.
-                    .SetSlidingExpiration(TimeSpan.FromSeconds(seconds))
-                    // Set the eviction callback
-                    .RegisterPostEvictionCallback(
-                        (evictedKey, value, reason, substate) =>
-                        {
-
-                            //NOTE: NEED TO ADD AN OPTION FOR UPDATING A DEVICE AS A REASON
-
-                            if(EvictionAction != null) RemovedDeviceCallback(device, reason);
-                            result = $"'{evictedKey}':'{value}' was evicted because: {reason}";
-                            Console.WriteLine(result);
-
-                        });
-
-                // Set cache entry size via property.
-                // cacheEntryOptions.Size = 1;
-
-                // Save data in cache.
-                Cache.Set(key, cacheEntry, cacheEntryOptions); // can get rid of the else and remove this from the if statement
-            }
-            else //not needed, move the set to outside the if statement
+                if (SetupAction != null)
+                    NewDeviceCallback(device);
+            } else
             {
-                //this is what happens if the object to be added already exists and needs to be updated
-                if(UpdateAction != null) UpdatedDeviceCallback(device);
+                UpdateObject(device, seconds);
             }
+
+            InsertObject(device, seconds);
         }
 
         /// <summary>
-        /// This function is used to get an object from the cache
+        ///     Update an object in the cache
         /// </summary>
-        /// <param name="key"> The object key. </param>
-        /// <returns> This function returns the object payload. </returns>
-        public string GetObject(string key)
+        /// <param name="device"></param>
+        /// <param name="seconds"></param>
+        public void UpdateObject(IBullseyeDevice device, int seconds)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
-            if (!Cache.TryGetValue(key, out string cacheEntry))
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            var key = device.GetId();
+
+            if (Cache.TryGetValue(key, out string cacheEntry))
             {
-                return "This object is not in cache.";
+                if (UpdateAction != null)
+                    UpdatedDeviceCallback(device);
             }
             else
             {
-                return cacheEntry;
+                AddObject(device, seconds);
             }
+
+            InsertObject(device, seconds);
         }
 
         /// <summary>
-        /// This function is used to get an object from the cache using a BullseyeDevice object
+        ///     This function is used to get an object from the cache
+        /// </summary>
+        /// <param name="key"> The object key. </param>
+        /// <returns> This function returns a IBullseyeDevice object. </returns>
+        public IBullseyeDevice GetObject(string key)
+        {
+            if (key == null) throw new ArgumentNullException(nameof(key));
+            if (!Cache.TryGetValue(key, out string cacheEntry)) return null;
+
+            var device = new BullseyeDevice(key, cacheEntry);
+            return device;
+        }
+
+        /// <summary>
+        ///     This function is used to get an object from the cache using a BullseyeDevice object
         /// </summary>
         /// <param name="device"> The object is a BullseyeDevice </param>
-        /// <returns> This function returns the object payload. </returns>
-        public string GetObject(IBullseyeDevice device)
+        /// <returns> This function returns a IBullseyeDevice object. </returns>
+        public IBullseyeDevice GetObject(IBullseyeDevice device)
         {
             if (device == null) throw new ArgumentNullException(nameof(device));
-            string key = device.GetId();
+            var key = device.GetId();
             return GetObject(key);
         }
 
         /// <summary>
-        /// This function is used to remove an object from the cache
+        ///     This function is used to remove an object from the cache based on a string ID
+        /// </summary>
+        /// <param name="key"></param>
+        public void RemoveObject(string key)
+        {
+            if (Cache.TryGetValue(key, out string cacheEntry))
+                Cache.Remove(key);
+            else
+                Console.WriteLine("This object is not in cache.");
+        }
+
+        /// <summary>
+        ///     This function is used to remove an object from the cache based on a IBullseyeDevice object
         /// </summary>
         /// <param name="device"> Supplied device to be removed from the cache </param>
         public void RemoveObject(IBullseyeDevice device)
         {
             if (device == null) throw new ArgumentNullException(nameof(device));
             var key = device.GetId();
-            
-            if (!Cache.TryGetValue(key, out string cacheEntry))
-            {
-                Console.WriteLine("This object is not in cache.");
-            }
-            else
-            {
-                RemovedDeviceCallback(device, EvictionReason.Removed);  //won't need this
-                Cache.Remove(key);
-            }
+            RemoveObject(key);
         }
 
         /// <summary>
-        /// This function removes all objects from the cache by creating a new fresh cache.
+        ///     This function removes all objects from the cache by creating a new fresh cache.
         /// </summary>
         public void RemoveAllObjects()
         {
             // is there a cache.removeall type function?
+
 
             Cache = new MemoryCache(new MemoryCacheOptions
             {
@@ -185,7 +179,38 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// Add multiple devices at once
+        /// Once an object is ready to be put in cache, it's inserted with this method
+        /// </summary>
+        /// <param name="device"> This is a provided IBullseyeDevice </param>
+        /// <param name="seconds"> This is the number of seconds the object will remain in cache </param>
+        public void InsertObject(IBullseyeDevice device, int seconds)
+        {
+            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
+            var key = device.GetId();
+            var info = device.GetDeviceInfo();
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                // Set cache entry size by extension method.
+                .SetSize(1)
+                // Keep in cache for this time, reset time if accessed.
+                .SetSlidingExpiration(TimeSpan.FromSeconds(seconds))
+                // Set the eviction callback
+                .RegisterPostEvictionCallback(
+                    (evictedKey, value, reason, substate) =>
+                    {
+                        //NOTE: NEED TO ADD AN OPTION FOR UPDATING A DEVICE AS A REASON
+
+                        if (EvictionAction != null) RemovedDeviceCallback(device, reason);
+                        var result = $"'{evictedKey}':'{value}' was evicted because: {reason}";
+                        Console.WriteLine(result);
+                    });
+
+            // Save data in cache.
+            Cache.Set(key, info, cacheEntryOptions);
+        }
+
+        /// <summary>
+        ///     Add multiple devices at once
         /// </summary>
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
         /// <param name="seconds"> This is the desired expiration time for the list of devices </param>
@@ -193,32 +218,24 @@ namespace BullseyeCacheLibrary
         {
             if (list == null) throw new ArgumentNullException(nameof(list));
             if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
-            foreach (var device in list)
-            {
-                AddObject(device, seconds);
-            }
+            foreach (var device in list) AddObject(device, seconds);
         }
-        
+
         /// <summary>
-        /// This function checks the cache for a list of devices and returns a list of those devices that exist in the cache
+        ///     This function checks the cache for a list of devices and returns a list of those devices that exist in the cache
         /// </summary>
         /// <param name="list"> This is a provided list of BullseyeDevices </param>
         public List<IBullseyeDevice> CheckCacheForMultipleObjects(List<IBullseyeDevice> list)
         {
-            List<IBullseyeDevice> foundDevices = new List<IBullseyeDevice>();
+            var foundDevices = new List<IBullseyeDevice>();
             if (list == null) throw new ArgumentNullException(nameof(list));
             foreach (var device in list)
             {
                 var key = device.Id;
-                if (Cache.TryGetValue(key, out string cacheEntry))
-                {
-                    foundDevices.Add(device);
-                }
+                if (Cache.TryGetValue(key, out string cacheEntry)) foundDevices.Add(device);
             }
 
             return foundDevices;
         }
-
     }
-
 }

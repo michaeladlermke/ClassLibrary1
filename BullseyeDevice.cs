@@ -1,4 +1,6 @@
-﻿namespace BullseyeCacheLibrary
+﻿using System;
+
+namespace BullseyeCacheLibrary
 {
 
     // class for a generic device object
@@ -9,8 +11,8 @@
 
         public BullseyeDevice(string id, string info)
         {
-            Id = id;
-            Payload = info;
+            Id = id ?? throw new ArgumentNullException(nameof(id));
+            Payload = info ?? throw new ArgumentNullException(nameof(info));
         }
 
         public string GetId()
@@ -23,5 +25,11 @@
             return Payload;
         }
 
+        public bool Equals(BullseyeDevice other)
+        {
+            if (other == null) throw new ArgumentNullException(nameof(other));
+            return Id.Equals(other.Id) && Payload.Equals(other.Payload);
+        }
+        
     }
 }
