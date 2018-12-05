@@ -84,7 +84,8 @@ namespace BullseyeCacheLibrary
             {
                 if (SetupAction != null)
                     NewDeviceCallback(device);
-            } else
+            }
+            else
             {
                 UpdateObject(device, seconds);
             }
@@ -179,13 +180,12 @@ namespace BullseyeCacheLibrary
         }
 
         /// <summary>
-        /// Once an object is ready to be put in cache, it's inserted with this method
+        ///     Once an object is ready to be put in cache, it's inserted with this method
         /// </summary>
         /// <param name="device"> This is a provided IBullseyeDevice </param>
         /// <param name="seconds"> This is the number of seconds the object will remain in cache </param>
-        public void InsertObject(IBullseyeDevice device, int seconds)
+        private void InsertObject(IBullseyeDevice device, int seconds)
         {
-            if (seconds <= 0) throw new ArgumentOutOfRangeException(nameof(seconds));
             var key = device.GetId();
             var info = device.GetDeviceInfo();
 
