@@ -6,24 +6,36 @@ namespace BullseyeCacheLibrary
 {
     public class BullseyeCache
     {
-        private readonly Action EvictionAction;
-        private readonly Action SetupAction;
-        private readonly Action UpdateAction;
+        //todo
+        // underscore lowercase private 
+        // make this class an interface
+        // might want to split into two classes... 
+        // insert update delete
+        // maintain the list
 
+        private readonly Action _setupAction;
+        private readonly Action _updateAction;
+        private readonly Action _evictionAction;
+        private readonly List<string> _cachedObjectList = new List<string>();
 
-        public BullseyeCache()
+        public IMemoryCache Cache { get; set; }
+
+        //todo
+        // rename to BullseyeMemoryCache
+
+        public BullseyeCache(IMemoryCache cache)
         {
-            Cache = new MemoryCache(new MemoryCacheOptions
-            {
-                SizeLimit = 1024
-            });
+            Cache = cache;
         }
 
         public BullseyeCache(Action preCallback, Action updateCallback, Action evictionCallback)
         {
-            SetupAction = preCallback;
-            UpdateAction = updateCallback;
-            EvictionAction = evictionCallback;
+            //todo
+            // add the IMemoryCache as a parameter that gets passed into the library
+
+            _setupAction = preCallback;
+            _updateAction = updateCallback;
+            _evictionAction = evictionCallback;
 
             Cache = new MemoryCache(new MemoryCacheOptions
             {
@@ -31,7 +43,6 @@ namespace BullseyeCacheLibrary
             });
         }
 
-        public MemoryCache Cache { get; set; }
 
         /// <summary>
         ///     This function is a placeholder for a function call that happens after a device has been added to the cache
@@ -39,7 +50,7 @@ namespace BullseyeCacheLibrary
         /// <param name="device"> This is the supplied device added to the cache </param>
         private void NewDeviceCallback(IBullseyeDevice device)
         {
-            SetupAction.Invoke();
+            _setupAction.Invoke();
         }
 
         /// <summary>
@@ -48,7 +59,7 @@ namespace BullseyeCacheLibrary
         /// <param name="device"> This is the supplied device updated in the cache </param>
         private void UpdatedDeviceCallback(IBullseyeDevice device)
         {
-            UpdateAction.Invoke();
+            _updateAction.Invoke();
         }
 
         /// <summary>
@@ -58,7 +69,7 @@ namespace BullseyeCacheLibrary
         /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
         private void RemovedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
         {
-            EvictionAction.Invoke();
+            _evictionAction.Invoke();
         }
 
         /// <summary>
@@ -67,7 +78,7 @@ namespace BullseyeCacheLibrary
         /// <returns>Returns a count of items in the cache</returns>
         public long BullseyeCacheCount()
         {
-            return Cache.Count;
+            return _cachedObjectList.Count;
         }
 
         /// <summary>
@@ -82,7 +93,7 @@ namespace BullseyeCacheLibrary
 
             if (!Cache.TryGetValue(key, out string cacheEntry))
             {
-                if (SetupAction != null)
+                if (_setupAction != null)
                     NewDeviceCallback(device);
             }
             else
@@ -90,6 +101,7 @@ namespace BullseyeCacheLibrary
                 UpdateObject(device, seconds);
             }
 
+            if (_cachedObjectList != null) _cachedObjectList.Add(key);
             InsertObject(device, seconds);
         }
 
@@ -105,7 +117,7 @@ namespace BullseyeCacheLibrary
 
             if (Cache.TryGetValue(key, out string cacheEntry))
             {
-                if (UpdateAction != null)
+                if (_updateAction != null)
                     UpdatedDeviceCallback(device);
             }
             else
@@ -149,7 +161,10 @@ namespace BullseyeCacheLibrary
         public void RemoveObject(string key)
         {
             if (Cache.TryGetValue(key, out string cacheEntry))
+            {
+                _cachedObjectList.Remove(key);
                 Cache.Remove(key);
+            }
             else
                 Console.WriteLine("This object is not in cache.");
         }
@@ -170,8 +185,12 @@ namespace BullseyeCacheLibrary
         /// </summary>
         public void RemoveAllObjects()
         {
-            // is there a cache.removeall type function?
-
+            foreach (var key in _cachedObjectList)
+            {
+                if (key != null) Cache.Remove(key);
+                //todo
+                // use a try to check if it exists and use a try/catch to catch an argument not found exception
+            }
 
             Cache = new MemoryCache(new MemoryCacheOptions
             {
@@ -184,10 +203,11 @@ namespace BullseyeCacheLibrary
         /// </summary>
         /// <param name="device"> This is a provided IBullseyeDevice </param>
         /// <param name="seconds"> This is the number of seconds the object will remain in cache </param>
-        private void InsertObject(IBullseyeDevice device, int seconds)
+        protected virtual void InsertObject(IBullseyeDevice device, int seconds)
         {
             var key = device.GetId();
             var info = device.GetDeviceInfo();
+
 
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 // Set cache entry size by extension method.
@@ -200,7 +220,7 @@ namespace BullseyeCacheLibrary
                     {
                         //NOTE: NEED TO ADD AN OPTION FOR UPDATING A DEVICE AS A REASON
 
-                        if (EvictionAction != null) RemovedDeviceCallback(device, reason);
+                        if (_evictionAction != null) RemovedDeviceCallback(device, reason);
                         var result = $"'{evictedKey}':'{value}' was evicted because: {reason}";
                         Console.WriteLine(result);
                     });
