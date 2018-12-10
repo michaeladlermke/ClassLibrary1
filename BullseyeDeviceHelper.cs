@@ -1,27 +1,28 @@
 ﻿using System;
+using BullseyeCacheLibrary;
 
 namespace BullseyeCacheLibrary
 {
     public class BullseyeDeviceHelper : IBullseyeDeviceHelper
     {
-        public Action StartUpAction => Startup;
+        public Action<IBullseyeDevice> StartUpAction => Startup;
 
-        public Action UpdateAction => Update;
-        public Action EvictionAction => Evict;
+        public Action<IBullseyeDevice> UpdateAction => Update;
+        public Action<IBullseyeDevice> EvictionAction => Evict;
 
-        public void Startup()
+        public void Startup(IBullseyeDevice device)
         {
-            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the start up helper ||||||||||||||||||||||||||||| ");
+            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the start up helper for device: " + device.Id + " ||||||||||||||||||||||||||||| ");
         }
 
-        public void Update()
+        public void Update(IBullseyeDevice device)
         {
-            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the update helper ||||||||||||||||||||||||||||| ");
+            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the update helper for device: " + device.Id + " ||||||||||||||||||||||||||||| ");
         }
 
-        public void Evict()
+        public void Evict(IBullseyeDevice device)
         { 
-            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the eviction helper ||||||||||||||||||||||||||||| ");
+            Console.WriteLine(" ||||||||||||||||||||||||||||| This is the eviction helper for device: " + device.Id + " ||||||||||||||||||||||||||||| ");
         }
     }
 }

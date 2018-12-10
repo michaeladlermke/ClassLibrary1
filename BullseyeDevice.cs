@@ -3,7 +3,7 @@
 namespace BullseyeCacheLibrary
 {
 
-    // class for a generic device object
+    // class for a generic device Device
     public class BullseyeDevice : IBullseyeDevice
     {
         public string Id { get; }
@@ -27,7 +27,11 @@ namespace BullseyeCacheLibrary
 
         public bool Equals(BullseyeDevice other)
         {
-            if (other == null) throw new ArgumentNullException(nameof(other));
+            if (other == null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
             return Id.Equals(other.Id) && Payload.Equals(other.Payload);
         }
         

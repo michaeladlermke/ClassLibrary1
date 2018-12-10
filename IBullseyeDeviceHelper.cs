@@ -4,8 +4,8 @@ namespace BullseyeCacheLibrary
 {
     public interface IBullseyeDeviceHelper
     {
-        Action StartUpAction { get; }
-        Action UpdateAction { get; }
-        Action EvictionAction { get; }
+        Action<IBullseyeDevice> StartUpAction { get; }
+        Action<IBullseyeDevice> UpdateAction { get; }
+        Action<IBullseyeDevice> EvictionAction { get; }
     }
 }

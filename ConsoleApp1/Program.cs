@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BullseyeCacheLibrary;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace ConsoleApp1
 {
@@ -8,11 +9,15 @@ namespace ConsoleApp1
     {
         private static void Main(string[] args)
         {
+            MemoryCache cache = new MemoryCache(new MemoryCacheOptions
+            {
+                SizeLimit = 1024
+            });
 
             BullseyeDeviceHelper helper = new BullseyeDeviceHelper();
-            BullseyeCache testCache = new BullseyeCache(helper.StartUpAction, helper.UpdateAction, helper.EvictionAction);
+            BullseyeMemoryCache testCache = new BullseyeMemoryCache(cache, helper.StartUpAction, helper.UpdateAction, helper.EvictionAction);
 
-            Console.WriteLine("Starting cache size: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Starting cache size: " + testCache.BullseyeMemoryCacheCount());
 
 
             BullseyeDevice dev01 = new BullseyeDevice("device 01", "{ 01 some device info; device info here; }");
@@ -39,31 +44,31 @@ namespace ConsoleApp1
             List<IBullseyeDevice> deviceList = new List<IBullseyeDevice> {dev05, dev06, dev07};
 
 
-            testCache.AddMultipleObjects(deviceList, 3);
-            Console.WriteLine("New cache size after adding a list of devices : " + testCache.BullseyeCacheCount());
+            testCache.AddMultipleDevices(deviceList, 3);
+            Console.WriteLine("New cache size after adding a list of devices : " + testCache.BullseyeMemoryCacheCount());
 
-            testCache.RemoveAllObjects();
-            Console.WriteLine("New cache size after removing all devices : " + testCache.BullseyeCacheCount());
+            testCache.RemoveAllDevices();
+            Console.WriteLine("New cache size after removing all devices : " + testCache.BullseyeMemoryCacheCount());
 
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");
 
-            testCache.AddMultipleObjects(deviceList, 3);
-            Console.WriteLine("New cache size after adding a list of devices : " + testCache.BullseyeCacheCount());
+            testCache.AddMultipleDevices(deviceList, 3);
+            Console.WriteLine("New cache size after adding a list of devices : " + testCache.BullseyeMemoryCacheCount());
 
             System.Threading.Thread.Sleep(1000);
-            Console.WriteLine("Is Device05 in cache: " + testCache.GetObject(dev05));
-            Console.WriteLine("Is Device06 in cache: " + testCache.GetObject(dev06));
-            Console.WriteLine("Is Device07 in cache: " + testCache.GetObject(dev07));
-            Console.WriteLine("New cache size after waiting for one second: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device05 in cache: " + testCache.GetDevice(dev05));
+            Console.WriteLine("Is Device06 in cache: " + testCache.GetDevice(dev06));
+            Console.WriteLine("Is Device07 in cache: " + testCache.GetDevice(dev07));
+            Console.WriteLine("New cache size after waiting for one second: " + testCache.BullseyeMemoryCacheCount());
             System.Threading.Thread.Sleep(5000);
-            Console.WriteLine("Is Device05 in cache: " + testCache.GetObject(dev05));
-            Console.WriteLine("Is Device06 in cache: " + testCache.GetObject(dev06));
-            Console.WriteLine("Is Device07 in cache: " + testCache.GetObject(dev07));
-            Console.WriteLine("New cache size after waiting for five seconds: " + testCache.BullseyeCacheCount());
-            testCache.RemoveAllObjects();
-            Console.WriteLine("New cache size after clearing the list of devices : " + testCache.BullseyeCacheCount());
-            Console.WriteLine("Final cache size: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device05 in cache: " + testCache.GetDevice(dev05));
+            Console.WriteLine("Is Device06 in cache: " + testCache.GetDevice(dev06));
+            Console.WriteLine("Is Device07 in cache: " + testCache.GetDevice(dev07));
+            Console.WriteLine("New cache size after waiting for five seconds: " + testCache.BullseyeMemoryCacheCount());
+            testCache.RemoveAllDevices();
+            Console.WriteLine("New cache size after clearing the list of devices : " + testCache.BullseyeMemoryCacheCount());
+            Console.WriteLine("Final cache size: " + testCache.BullseyeMemoryCacheCount());
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("");
@@ -78,19 +83,19 @@ namespace ConsoleApp1
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine(" Add a bunch of devices to the cache and clear it out");
             Console.WriteLine("----------------------------------------------");
-            testCache.AddObject(dev01, 1);
-            Console.WriteLine("New cache size after adding one device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev02, 11);
-            Console.WriteLine("New cache size after adding another device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev03, 16);
-            Console.WriteLine("New cache size after adding a third device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev04, 16);
-            Console.WriteLine("New cache size after adding a fourth device : " + testCache.BullseyeCacheCount());
+            testCache.AddDevice(dev01, 1);
+            Console.WriteLine("New cache size after adding one device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev02, 11);
+            Console.WriteLine("New cache size after adding another device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev03, 16);
+            Console.WriteLine("New cache size after adding a third device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev04, 16);
+            Console.WriteLine("New cache size after adding a fourth device : " + testCache.BullseyeMemoryCacheCount());
 
-            testCache.RemoveAllObjects();
-            Console.WriteLine("New cache size after removing all of the devices : " + testCache.BullseyeCacheCount());
+            testCache.RemoveAllDevices();
+            Console.WriteLine("New cache size after removing all of the devices : " + testCache.BullseyeMemoryCacheCount());
 
-            Console.WriteLine("Final cache size: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Final cache size: " + testCache.BullseyeMemoryCacheCount());
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("");
@@ -100,47 +105,47 @@ namespace ConsoleApp1
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine(" Add four devices to the empty cache and then remove one device");
             Console.WriteLine("----------------------------------------------");
-            testCache.AddObject(dev01, 1);
-            Console.WriteLine("New cache size after adding one device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev02, 11);
-            Console.WriteLine("New cache size after adding another device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev03, 16);
-            Console.WriteLine("New cache size after adding a third device : " + testCache.BullseyeCacheCount());
-            testCache.AddObject(dev04, 16);
-            Console.WriteLine("New cache size after adding a fourth device : " + testCache.BullseyeCacheCount());
+            testCache.AddDevice(dev01, 1);
+            Console.WriteLine("New cache size after adding one device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev02, 11);
+            Console.WriteLine("New cache size after adding another device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev03, 16);
+            Console.WriteLine("New cache size after adding a third device : " + testCache.BullseyeMemoryCacheCount());
+            testCache.AddDevice(dev04, 16);
+            Console.WriteLine("New cache size after adding a fourth device : " + testCache.BullseyeMemoryCacheCount());
             
 
-            testCache.RemoveObject(dev04);
-            Console.WriteLine("New cache size after removing the fourth device : " + testCache.BullseyeCacheCount());
+            testCache.RemoveDevice(dev04);
+            Console.WriteLine("New cache size after removing the fourth device : " + testCache.BullseyeMemoryCacheCount());
 
-            Console.WriteLine("Current cache size: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Current cache size: " + testCache.BullseyeMemoryCacheCount());
 
             
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine(" Test that devices drop out of the cache in correctly timed intervals: Devices will fall off in 1,11,16 seconds");
             Console.WriteLine("----------------------------------------------");
 
-            Console.WriteLine("Current cache size after inserting timed devices: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Current cache size after inserting timed devices: " + testCache.BullseyeMemoryCacheCount());
             System.Threading.Thread.Sleep(5000);
-            Console.WriteLine("Is Device01 in cache: " + testCache.GetObject(dev01));
-            Console.WriteLine("Is Device02 in cache: " + testCache.GetObject(dev02));
-            Console.WriteLine("Is Device03 in cache: " + testCache.GetObject(dev03));
-            Console.WriteLine("New cache size after waiting for five seconds: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device01 in cache: " + testCache.GetDevice(dev01));
+            Console.WriteLine("Is Device02 in cache: " + testCache.GetDevice(dev02));
+            Console.WriteLine("Is Device03 in cache: " + testCache.GetDevice(dev03));
+            Console.WriteLine("New cache size after waiting for five seconds: " + testCache.BullseyeMemoryCacheCount());
             System.Threading.Thread.Sleep(10000);
-            Console.WriteLine("Is Device01 in cache: " + testCache.GetObject(dev01));
-            Console.WriteLine("Is Device02 in cache: " + testCache.GetObject(dev02));
-            Console.WriteLine("Is Device03 in cache: " + testCache.GetObject(dev03));
-            Console.WriteLine("New cache size after waiting for ten seconds: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device01 in cache: " + testCache.GetDevice(dev01));
+            Console.WriteLine("Is Device02 in cache: " + testCache.GetDevice(dev02));
+            Console.WriteLine("Is Device03 in cache: " + testCache.GetDevice(dev03));
+            Console.WriteLine("New cache size after waiting for ten seconds: " + testCache.BullseyeMemoryCacheCount());
             System.Threading.Thread.Sleep(15000);
-            Console.WriteLine("Is Device01 in cache: " + testCache.GetObject(dev01));
-            Console.WriteLine("Is Device02 in cache: " + testCache.GetObject(dev02));
-            Console.WriteLine("Is Device03 in cache: " + testCache.GetObject(dev03));
-            Console.WriteLine("New cache size after waiting for fifteen seconds: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device01 in cache: " + testCache.GetDevice(dev01));
+            Console.WriteLine("Is Device02 in cache: " + testCache.GetDevice(dev02));
+            Console.WriteLine("Is Device03 in cache: " + testCache.GetDevice(dev03));
+            Console.WriteLine("New cache size after waiting for fifteen seconds: " + testCache.BullseyeMemoryCacheCount());
             System.Threading.Thread.Sleep(20000);
-            Console.WriteLine("Is Device01 in cache: " + testCache.GetObject(dev01));
-            Console.WriteLine("Is Device02 in cache: " + testCache.GetObject(dev02));
-            Console.WriteLine("Is Device03 in cache: " + testCache.GetObject(dev03));
-            Console.WriteLine("New cache size after waiting for twenty seconds: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Is Device01 in cache: " + testCache.GetDevice(dev01));
+            Console.WriteLine("Is Device02 in cache: " + testCache.GetDevice(dev02));
+            Console.WriteLine("Is Device03 in cache: " + testCache.GetDevice(dev03));
+            Console.WriteLine("New cache size after waiting for twenty seconds: " + testCache.BullseyeMemoryCacheCount());
 
             Console.WriteLine("----------------------------------------------");
             Console.WriteLine("----------------------------------------------");
@@ -148,7 +153,7 @@ namespace ConsoleApp1
             Console.WriteLine("");
 
 
-            Console.WriteLine("Final cache size: " + testCache.BullseyeCacheCount());
+            Console.WriteLine("Final cache size: " + testCache.BullseyeMemoryCacheCount());
 
             Console.Read();
 
