@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using log4net;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
-namespace BullseyeCacheLibrary
+namespace Baxter.Bullseye.MemoryCache
 {
     public class BullseyeMemoryCache : IBullseyeMemoryCache
     {
@@ -11,7 +11,7 @@ namespace BullseyeCacheLibrary
         private readonly Action<IBullseyeDevice> _evictionAction;
         private readonly Action<IBullseyeDevice> _setupAction;
         private readonly Action<IBullseyeDevice> _updateAction;
-        private static readonly ILog Logger = LogManager.GetLogger(typeof(BullseyeMemoryCache));
+        private readonly ILogger<BullseyeMemoryCache> Logger;
 
         public BullseyeMemoryCache(IMemoryCache cache)
         {
@@ -21,9 +21,9 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                Logger.Error(e.ToString());
+                Logger.LogError(e, "Null IMemoryCache is not allowed.");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -39,9 +39,9 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                // Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "Null Arguments are not allowed.");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
 
             /*
@@ -102,9 +102,9 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                //Logger.Error(e.ToString()); todo 
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -147,9 +147,9 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                //Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -178,10 +178,12 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                //Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -204,10 +206,12 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                //Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -235,15 +239,15 @@ namespace BullseyeCacheLibrary
                 }
                 else
                 {
-                    //Logger.Error(e.ToString()); todo
-                    Console.WriteLine("This Device is not in cache.");
+                    Logger.LogDebug(key + " is not in cache and can't be removed.");
+                    Console.WriteLine(key + " is not in cache and can't be removed.");
                 }
             }
             catch (Exception e)
             {
-                //Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -269,18 +273,19 @@ namespace BullseyeCacheLibrary
 
                     _cachedDeviceList.Remove(key);
                     Cache.Remove(key);
+                    Logger.LogDebug(device.Id + " has been removed from the cache.");
                 }
                 else
                 {
-                    //Logger.Error(e.ToString()); todo
-                    Console.WriteLine("This Device is not in cache.");
+                    Logger.LogDebug(device.Id + " is not in the cache and can't be removed.");
+                    Console.WriteLine(device.Id + " is not in the cache and can't be removed.");
                 }
             }
             catch (Exception e)
             {
-                // Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -323,9 +328,9 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                // Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
         }
 
@@ -336,9 +341,11 @@ namespace BullseyeCacheLibrary
         /// <exception cref="ArgumentNullException"></exception>
         public List<IBullseyeDevice> CheckCacheForMultipleDevices(List<IBullseyeDevice> list)
         {
+
+            var foundDevices = new List<IBullseyeDevice>();
+
             try
             {
-                var foundDevices = new List<IBullseyeDevice>();
                 if (list == null)
                 {
                     throw new ArgumentNullException(nameof(list));
@@ -357,19 +364,21 @@ namespace BullseyeCacheLibrary
             }
             catch (Exception e)
             {
-                // Logger.Error(e.ToString()); todo
+                Logger.LogError(e, "");
                 Console.WriteLine(e);
-                throw;
+                //throw;
             }
+
+            return foundDevices;
         }
-        
+
         /// <summary>
         ///     This function is a placeholder for a function call that happens after a device has been added to the cache
         /// </summary>
         /// <param name="device"> This is the supplied device added to the cache </param>
         protected virtual void NewDeviceCallback(IBullseyeDevice device)
         {
-                _setupAction.Invoke(device);
+            _setupAction.Invoke(device);
         }
 
         /// <summary>
@@ -422,7 +431,7 @@ namespace BullseyeCacheLibrary
                             result = $"'{evictedKey}' was {reason}";
                             UpdatedDeviceCallback(device, reason);
                         }
-                        
+
                         //Logger.Error(e.ToString()); todo
                         Console.WriteLine(result);
                     });

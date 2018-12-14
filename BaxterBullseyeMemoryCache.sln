@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BullseyeCacheLibrary", "BullseyeCacheLibrary.csproj", "{B3BED2B7-CE20-4123-8577-4693A593DE41}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BullseyeCacheTestProject", "..\BullseyeCacheTestProject\BullseyeCacheTestProject.csproj", "{453CB605-7A36-4438-A35F-4C1AB368FD4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BullseyeCacheTestProject", "..\BullseyeCacheTestProject\BullseyeCacheTestProject.csproj", "{453CB605-7A36-4438-A35F-4C1AB368FD4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Baxter.Bullseye.MemoryCache", "BullseyeMemoryCache\Baxter.Bullseye.MemoryCache.csproj", "{2A5F07F6-1504-4FAD-B1E9-007A7C298B37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B3BED2B7-CE20-4123-8577-4693A593DE41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3BED2B7-CE20-4123-8577-4693A593DE41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3BED2B7-CE20-4123-8577-4693A593DE41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3BED2B7-CE20-4123-8577-4693A593DE41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04ECC4A9-6A41-4702-9B80-1A6F731ED0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -27,6 +23,10 @@ Global
 		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{453CB605-7A36-4438-A35F-4C1AB368FD4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A5F07F6-1504-4FAD-B1E9-007A7C298B37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A5F07F6-1504-4FAD-B1E9-007A7C298B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A5F07F6-1504-4FAD-B1E9-007A7C298B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A5F07F6-1504-4FAD-B1E9-007A7C298B37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

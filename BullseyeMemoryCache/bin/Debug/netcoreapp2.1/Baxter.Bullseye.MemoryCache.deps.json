@@ -6,14 +6,13 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.1": {
-      "ConsoleApp1/1.0.0": {
+      "Baxter.Bullseye.MemoryCache/1.0.0": {
         "dependencies": {
-          "Baxter.Bullseye.MemoryCache": "1.0.0",
           "Microsoft.Extensions.Caching.Memory": "2.2.0",
           "log4net": "2.0.8"
         },
         "runtime": {
-          "ConsoleApp1.dll": {}
+          "Baxter.Bullseye.MemoryCache.dll": {}
         }
       },
       "log4net/2.0.8": {
@@ -930,20 +929,11 @@
           "System.Threading": "4.0.11",
           "System.Xml.ReaderWriter": "4.0.11"
         }
-      },
-      "Baxter.Bullseye.MemoryCache/1.0.0": {
-        "dependencies": {
-          "Microsoft.Extensions.Caching.Memory": "2.2.0",
-          "log4net": "2.0.8"
-        },
-        "runtime": {
-          "Baxter.Bullseye.MemoryCache.dll": {}
-        }
       }
     }
   },
   "libraries": {
-    "ConsoleApp1/1.0.0": {
+    "Baxter.Bullseye.MemoryCache/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -1479,11 +1469,6 @@
       "sha512": "sha512-2eZu6IP+etFVBBFUFzw2w6J21DqIN5eL9Y8r8JfJWUmV28Z5P0SNU01oCisVHQgHsDhHPnmq2s1hJrJCFZWloQ==",
       "path": "system.xml.xmldocument/4.0.1",
       "hashPath": "system.xml.xmldocument.4.0.1.nupkg.sha512"
-    },
-    "Baxter.Bullseye.MemoryCache/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     }
   }
 }

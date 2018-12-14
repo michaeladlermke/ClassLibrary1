@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BullseyeCacheLibrary
+namespace Baxter.Bullseye.MemoryCache
 {
     public class BullseyeDeviceHelper : IBullseyeDeviceHelper
     {

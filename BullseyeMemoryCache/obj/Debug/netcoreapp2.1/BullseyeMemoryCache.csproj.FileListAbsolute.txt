@@ -1,0 +1,9 @@
+C:\repos\ClassLibrary1\BullseyeMemoryCache\bin\Debug\netcoreapp2.1\BullseyeMemoryCache.deps.json
+C:\repos\ClassLibrary1\BullseyeMemoryCache\bin\Debug\netcoreapp2.1\BullseyeMemoryCache.dll
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.csprojAssemblyReference.cache
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.csproj.CoreCompileInputs.cache
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.AssemblyInfoInputs.cache
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.AssemblyInfo.cs
+C:\repos\ClassLibrary1\BullseyeMemoryCache\bin\Debug\netcoreapp2.1\BullseyeMemoryCache.pdb
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.dll
+C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\BullseyeMemoryCache.pdb

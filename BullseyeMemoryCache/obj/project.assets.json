@@ -191,7 +191,6 @@
           "ref/netcoreapp2.1/System.Core.dll": {},
           "ref/netcoreapp2.1/System.Data.Common.dll": {},
           "ref/netcoreapp2.1/System.Data.dll": {},
-          "ref/netcoreapp2.1/System.DeviceModel.dll": {},
           "ref/netcoreapp2.1/System.Diagnostics.Contracts.dll": {},
           "ref/netcoreapp2.1/System.Diagnostics.Debug.dll": {},
           "ref/netcoreapp2.1/System.Diagnostics.DiagnosticSource.dll": {},
@@ -245,6 +244,7 @@
           "ref/netcoreapp2.1/System.Net.dll": {},
           "ref/netcoreapp2.1/System.Numerics.Vectors.dll": {},
           "ref/netcoreapp2.1/System.Numerics.dll": {},
+          "ref/netcoreapp2.1/System.ObjectModel.dll": {},
           "ref/netcoreapp2.1/System.Reflection.DispatchProxy.dll": {},
           "ref/netcoreapp2.1/System.Reflection.Emit.ILGeneration.dll": {},
           "ref/netcoreapp2.1/System.Reflection.Emit.Lightweight.dll": {},
@@ -1637,21 +1637,6 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XmlDocument.dll": {}
         }
-      },
-      "Baxter.Bullseye.MemoryCache/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
-        "dependencies": {
-          "Microsoft.Extensions.Caching.Memory": "2.2.0",
-          "Microsoft.Extensions.Logging": "2.1.1",
-          "log4net": "2.0.8"
-        },
-        "compile": {
-          "bin/placeholder/Baxter.Bullseye.MemoryCache.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/Baxter.Bullseye.MemoryCache.dll": {}
-        }
       }
     }
   },
@@ -1851,8 +1836,6 @@
         "ref/netcoreapp2.1/System.Data.Common.dll",
         "ref/netcoreapp2.1/System.Data.Common.xml",
         "ref/netcoreapp2.1/System.Data.dll",
-        "ref/netcoreapp2.1/System.DeviceModel.dll",
-        "ref/netcoreapp2.1/System.DeviceModel.xml",
         "ref/netcoreapp2.1/System.Diagnostics.Contracts.dll",
         "ref/netcoreapp2.1/System.Diagnostics.Contracts.xml",
         "ref/netcoreapp2.1/System.Diagnostics.Debug.dll",
@@ -1947,6 +1930,8 @@
         "ref/netcoreapp2.1/System.Numerics.Vectors.dll",
         "ref/netcoreapp2.1/System.Numerics.Vectors.xml",
         "ref/netcoreapp2.1/System.Numerics.dll",
+        "ref/netcoreapp2.1/System.ObjectModel.dll",
+        "ref/netcoreapp2.1/System.ObjectModel.xml",
         "ref/netcoreapp2.1/System.Reflection.DispatchProxy.dll",
         "ref/netcoreapp2.1/System.Reflection.DispatchProxy.xml",
         "ref/netcoreapp2.1/System.Reflection.Emit.ILGeneration.dll",
@@ -2222,7 +2207,6 @@
         "build/netstandard2.0/ref/System.Core.dll",
         "build/netstandard2.0/ref/System.Data.Common.dll",
         "build/netstandard2.0/ref/System.Data.dll",
-        "build/netstandard2.0/ref/System.DeviceModel.dll",
         "build/netstandard2.0/ref/System.Diagnostics.Contracts.dll",
         "build/netstandard2.0/ref/System.Diagnostics.Debug.dll",
         "build/netstandard2.0/ref/System.Diagnostics.FileVersionInfo.dll",
@@ -2267,6 +2251,7 @@
         "build/netstandard2.0/ref/System.Net.WebSockets.dll",
         "build/netstandard2.0/ref/System.Net.dll",
         "build/netstandard2.0/ref/System.Numerics.dll",
+        "build/netstandard2.0/ref/System.ObjectModel.dll",
         "build/netstandard2.0/ref/System.Reflection.Extensions.dll",
         "build/netstandard2.0/ref/System.Reflection.Primitives.dll",
         "build/netstandard2.0/ref/System.Reflection.dll",
@@ -5607,18 +5592,14 @@
         "system.xml.xmldocument.4.0.1.nupkg.sha512",
         "system.xml.xmldocument.nuspec"
       ]
-    },
-    "Baxter.Bullseye.MemoryCache/1.0.0": {
-      "type": "project",
-      "path": "../BullseyeMemoryCache/Baxter.Bullseye.MemoryCache.csproj",
-      "msbuildProject": "../BullseyeMemoryCache/Baxter.Bullseye.MemoryCache.csproj"
     }
   },
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v2.1": [
-      "Baxter.Bullseye.MemoryCache >= 1.0.0",
       "Microsoft.Extensions.Caching.Memory >= 2.2.0",
-      "Microsoft.NETCore.App >= 2.1.0"
+      "Microsoft.Extensions.Logging >= 2.1.1",
+      "Microsoft.NETCore.App >= 2.1.0",
+      "log4net >= 2.0.8"
     ]
   },
   "packageFolders": {
@@ -5628,11 +5609,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\repos\\ClassLibrary1\\ConsoleApp1\\ConsoleApp1.csproj",
-      "projectName": "ConsoleApp1",
-      "projectPath": "C:\\repos\\ClassLibrary1\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectUniqueName": "C:\\repos\\ClassLibrary1\\BullseyeMemoryCache\\Baxter.Bullseye.MemoryCache.csproj",
+      "projectName": "Baxter.Bullseye.MemoryCache",
+      "projectPath": "C:\\repos\\ClassLibrary1\\BullseyeMemoryCache\\Baxter.Bullseye.MemoryCache.csproj",
       "packagesPath": "C:\\Users\\adlerm2\\.nuget\\packages\\",
-      "outputPath": "C:\\repos\\ClassLibrary1\\ConsoleApp1\\obj\\",
+      "outputPath": "C:\\repos\\ClassLibrary1\\BullseyeMemoryCache\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -5651,11 +5632,7 @@
       },
       "frameworks": {
         "netcoreapp2.1": {
-          "projectReferences": {
-            "C:\\repos\\ClassLibrary1\\BullseyeMemoryCache\\Baxter.Bullseye.MemoryCache.csproj": {
-              "projectPath": "C:\\repos\\ClassLibrary1\\BullseyeMemoryCache\\Baxter.Bullseye.MemoryCache.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
@@ -5671,10 +5648,19 @@
             "target": "Package",
             "version": "[2.2.0, )"
           },
+          "Microsoft.Extensions.Logging": {
+            "target": "Package",
+            "version": "[2.1.1, )"
+          },
           "Microsoft.NETCore.App": {
+            "suppressParent": "All",
             "target": "Package",
             "version": "[2.1.0, )",
             "autoReferenced": true
+          },
+          "log4net": {
+            "target": "Package",
+            "version": "[2.0.8, )"
           }
         },
         "imports": [
