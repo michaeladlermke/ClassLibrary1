@@ -15,9 +15,16 @@ namespace Baxter.Bullseye.MemoryCache
         protected readonly Action<IBullseyeDevice> SetupAction;
         protected readonly Action<IBullseyeDevice> UpdateAction;
         protected readonly ILog Logger = LogManager.GetLogger(typeof(IBullseyeMemoryCache));
+
         public IMemoryCache Cache { get; set; }
-
-
+        
+        //todo
+        // might want to split into two classes... 
+        // insert update delete
+        // maintain the list
+        
+        #region Constructors
+            
         public BullseyeMemoryCache(IMemoryCache cache)
         {
             try
@@ -49,13 +56,10 @@ namespace Baxter.Bullseye.MemoryCache
                 throw;
             }
         }
-
-
-        //todo
-        // might want to split into two classes... 
-        // insert update delete
-        // maintain the list
-
+        
+        #endregion
+        
+        #region CreateFunctions
 
         /// <summary>
         ///     Add a Device to the cache
@@ -104,42 +108,27 @@ namespace Baxter.Bullseye.MemoryCache
         }
 
         /// <summary>
-        ///     Update a Device in the cache
+        ///     Add multiple devices at once
         /// </summary>
-        /// <param name="device"></param>
-        /// <param name="seconds"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="list"> This is a provided list of BullseyeDevices </param>
+        /// <param name="seconds"> This is the desired expiration time for the list of devices </param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public void UpdateDevice(IBullseyeDevice device, int seconds)
+        /// <exception cref="ArgumentNullException"></exception>
+        public void AddMultipleDevices(List<IBullseyeDevice> list, int seconds)
         {
             try
             {
+                if (list == null)
+                {
+                    throw new ArgumentNullException(nameof(list));
+                }
+
                 if (seconds <= 0)
                 {
                     throw new ArgumentOutOfRangeException(nameof(seconds));
                 }
 
-                if (device == null)
-                {
-                    throw new ArgumentNullException(nameof(device));
-                }
-
-                var key = device.GetId();
-
-                if (_cachedDeviceList.Contains(key))
-                {
-                    if (UpdateAction != null)
-                    {
-                        UpdatedDeviceCallback(device, EvictionReason.Replaced);
-                    }
-                }
-                else
-                {
-                    ;
-                    AddDevice(device, seconds);
-                }
-
-                InsertDevice(device, seconds);
+                foreach (var device in list) AddDevice(device, seconds);
             }
             catch (Exception e)
             {
@@ -148,6 +137,10 @@ namespace Baxter.Bullseye.MemoryCache
                 throw;
             }
         }
+
+        #endregion
+
+        #region ReadFunctions
 
         /// <summary>
         ///     This function is used to get a Device from the cache
@@ -209,6 +202,61 @@ namespace Baxter.Bullseye.MemoryCache
 
             return null;
         }
+
+        #endregion
+
+        #region UpdateFunctions
+
+        /// <summary>
+        ///     Update a Device in the cache
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="seconds"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public void UpdateDevice(IBullseyeDevice device, int seconds)
+        {
+            try
+            {
+                if (seconds <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(seconds));
+                }
+
+                if (device == null)
+                {
+                    throw new ArgumentNullException(nameof(device));
+                }
+
+                var key = device.GetId();
+
+                if (_cachedDeviceList.Contains(key))
+                {
+                    if (UpdateAction != null)
+                    {
+                        UpdatedDeviceCallback(device, EvictionReason.Replaced);
+                    }
+                }
+                else
+                {
+                    ;
+                    AddDevice(device, seconds);
+                }
+
+                InsertDevice(device, seconds);
+            }
+            catch (Exception e)
+            {
+                Logger.Error("", e);
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region DeleteFunctions
+
 
         /// <summary>
         ///     This function is used to remove a Device from the cache based on a string ID
@@ -299,36 +347,10 @@ namespace Baxter.Bullseye.MemoryCache
             _cachedDeviceList.Clear();
         }
 
-        /// <summary>
-        ///     Add multiple devices at once
-        /// </summary>
-        /// <param name="list"> This is a provided list of BullseyeDevices </param>
-        /// <param name="seconds"> This is the desired expiration time for the list of devices </param>
-        /// <exception cref="ArgumentOutOfRangeException"></exception>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void AddMultipleDevices(List<IBullseyeDevice> list, int seconds)
-        {
-            try
-            {
-                if (list == null)
-                {
-                    throw new ArgumentNullException(nameof(list));
-                }
 
-                if (seconds <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(seconds));
-                }
+        #endregion
 
-                foreach (var device in list) AddDevice(device, seconds);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("", e);
-                Console.WriteLine(e);
-                throw;
-            }
-        }
+        #region HelperFunctions
 
         /// <summary>
         ///     This function checks the cache for a list of devices and returns a list of those devices that exist in the cache
@@ -364,37 +386,8 @@ namespace Baxter.Bullseye.MemoryCache
                 Console.WriteLine(e);
                 throw;
             }
-
-            return foundDevices;
         }
 
-        /// <summary>
-        ///     This function is a placeholder for a function call that happens after a device has been added to the cache
-        /// </summary>
-        /// <param name="device"> This is the supplied device added to the cache </param>
-        protected virtual void NewDeviceCallback(IBullseyeDevice device)
-        {
-            SetupAction.Invoke(device);
-        }
-
-        /// <summary>
-        ///     This function is a placeholder for a function call that happens after a device has been updated in the cache
-        /// </summary>
-        /// <param name="device"> This is the supplied device updated in the cache </param>
-        protected virtual void UpdatedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
-        {
-            if (reason == EvictionReason.Replaced) UpdateAction.Invoke(device);
-        }
-
-        /// <summary>
-        ///     This function is a placeholder for a function call that happens after a device has been removed from the cache
-        /// </summary>
-        /// <param name="device"> This is the supplied device removed from the cache </param>
-        /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
-        protected virtual void RemovedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
-        {
-            if (reason == EvictionReason.Removed) EvictionAction.Invoke(device);
-        }
 
         /// <summary>
         ///     Once a Device is ready to be put in cache, it's inserted with this method
@@ -438,5 +431,40 @@ namespace Baxter.Bullseye.MemoryCache
 
             Cache.Set(key, info, cacheEntryOptions);
         }
+
+        #endregion
+
+        #region CallbackFunctions
+
+        /// <summary>
+        ///     This function is a placeholder for a function call that happens after a device has been added to the cache
+        /// </summary>
+        /// <param name="device"> This is the supplied device added to the cache </param>
+        protected virtual void NewDeviceCallback(IBullseyeDevice device)
+        {
+            SetupAction.Invoke(device);
+        }
+
+        /// <summary>
+        ///     This function is a placeholder for a function call that happens after a device has been updated in the cache
+        /// </summary>
+        /// <param name="device"> This is the supplied device updated in the cache </param>
+        protected virtual void UpdatedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
+        {
+            if (reason == EvictionReason.Replaced) UpdateAction.Invoke(device);
+        }
+
+        /// <summary>
+        ///     This function is a placeholder for a function call that happens after a device has been removed from the cache
+        /// </summary>
+        /// <param name="device"> This is the supplied device removed from the cache </param>
+        /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
+        protected virtual void RemovedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
+        {
+            if (reason == EvictionReason.Removed) EvictionAction.Invoke(device);
+        }
+
+        #endregion
+        
     }
 }
