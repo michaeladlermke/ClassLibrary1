@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using log4net;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
@@ -8,10 +9,14 @@ namespace Baxter.Bullseye.MemoryCache
     public class BullseyeMemoryCache : IBullseyeMemoryCache
     {
         private readonly List<string> _cachedDeviceList = new List<string>();
-        private readonly Action<IBullseyeDevice> _evictionAction;
-        private readonly Action<IBullseyeDevice> _setupAction;
-        private readonly Action<IBullseyeDevice> _updateAction;
-        private readonly ILogger<BullseyeMemoryCache> Logger;
+        public long Count => _cachedDeviceList.Count;
+
+        protected readonly Action<IBullseyeDevice> EvictionAction;
+        protected readonly Action<IBullseyeDevice> SetupAction;
+        protected readonly Action<IBullseyeDevice> UpdateAction;
+        protected readonly ILog Logger = LogManager.GetLogger(typeof(IBullseyeMemoryCache));
+        public IMemoryCache Cache { get; set; }
+
 
         public BullseyeMemoryCache(IMemoryCache cache)
         {
@@ -21,9 +26,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Null IMemoryCache is not allowed.");
+                Logger.Error("Null IMemoryCache is not allowed.", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -33,34 +38,23 @@ namespace Baxter.Bullseye.MemoryCache
             try
             {
                 Cache = cache ?? throw new ArgumentNullException(nameof(cache));
-                _setupAction = preCallback ?? throw new ArgumentNullException(nameof(preCallback));
-                _updateAction = updateCallback ?? throw new ArgumentNullException(nameof(updateCallback));
-                _evictionAction = evictionCallback ?? throw new ArgumentNullException(nameof(evictionCallback));
+                SetupAction = preCallback ?? throw new ArgumentNullException(nameof(preCallback));
+                UpdateAction = updateCallback ?? throw new ArgumentNullException(nameof(updateCallback));
+                EvictionAction = evictionCallback ?? throw new ArgumentNullException(nameof(evictionCallback));
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "Null Arguments are not allowed.");
+                Logger.Error("Null Arguments are not allowed.", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
-
-            /*
-            Cache = new MemoryCache(new MemoryCacheOptions
-            {
-                SizeLimit = 1024
-            });
-            */
         }
 
-        public long Count => _cachedDeviceList.Count;
-        //private static readonly ILog Logger = LogManager.GetLogger(typeof(BullseyeMemoryCache));
 
         //todo
         // might want to split into two classes... 
         // insert update delete
         // maintain the list
-
-        public IMemoryCache Cache { get; set; }
 
 
         /// <summary>
@@ -68,6 +62,7 @@ namespace Baxter.Bullseye.MemoryCache
         /// </summary>
         /// <param name="device"> This is a provided IBullseyeDevice </param>
         /// <param name="seconds"> This is the number of seconds the device will remain in the cache </param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void AddDevice(IBullseyeDevice device, int seconds)
         {
@@ -87,7 +82,7 @@ namespace Baxter.Bullseye.MemoryCache
 
                 if (!_cachedDeviceList.Contains(key))
                 {
-                    if (_setupAction != null)
+                    if (SetupAction != null)
                     {
                         _cachedDeviceList.Add(key);
                         NewDeviceCallback(device);
@@ -102,9 +97,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -113,6 +108,7 @@ namespace Baxter.Bullseye.MemoryCache
         /// </summary>
         /// <param name="device"></param>
         /// <param name="seconds"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
         public void UpdateDevice(IBullseyeDevice device, int seconds)
         {
@@ -132,7 +128,7 @@ namespace Baxter.Bullseye.MemoryCache
 
                 if (_cachedDeviceList.Contains(key))
                 {
-                    if (_updateAction != null)
+                    if (UpdateAction != null)
                     {
                         UpdatedDeviceCallback(device, EvictionReason.Replaced);
                     }
@@ -147,9 +143,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -178,9 +174,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
 
             return null;
@@ -206,9 +202,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
 
             return null;
@@ -232,22 +228,22 @@ namespace Baxter.Bullseye.MemoryCache
                 {
                     var device = GetDevice(key);
 
-                    if (_evictionAction != null) RemovedDeviceCallback(device, EvictionReason.Removed);
+                    if (EvictionAction != null) RemovedDeviceCallback(device, EvictionReason.Removed);
 
                     _cachedDeviceList.Remove(key);
                     Cache.Remove(key);
                 }
                 else
                 {
-                    Logger.LogDebug(key + " is not in cache and can't be removed.");
+                    Logger.Info(key + " is not in cache and can't be removed.");
                     Console.WriteLine(key + " is not in cache and can't be removed.");
                 }
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -269,23 +265,23 @@ namespace Baxter.Bullseye.MemoryCache
 
                 if (_cachedDeviceList.Contains(key))
                 {
-                    if (_evictionAction != null) RemovedDeviceCallback(device, EvictionReason.Removed);
+                    if (EvictionAction != null) RemovedDeviceCallback(device, EvictionReason.Removed);
 
                     _cachedDeviceList.Remove(key);
                     Cache.Remove(key);
-                    Logger.LogDebug(device.Id + " has been removed from the cache.");
+                    //Logger.LogDebug(device.Id + " has been removed from the cache.");
                 }
                 else
                 {
-                    Logger.LogDebug(device.Id + " is not in the cache and can't be removed.");
+                    //Logger.LogDebug(device.Id + " is not in the cache and can't be removed.");
                     Console.WriteLine(device.Id + " is not in the cache and can't be removed.");
                 }
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -328,9 +324,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
         }
 
@@ -364,9 +360,9 @@ namespace Baxter.Bullseye.MemoryCache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "");
+                Logger.Error("", e);
                 Console.WriteLine(e);
-                //throw;
+                throw;
             }
 
             return foundDevices;
@@ -378,7 +374,7 @@ namespace Baxter.Bullseye.MemoryCache
         /// <param name="device"> This is the supplied device added to the cache </param>
         protected virtual void NewDeviceCallback(IBullseyeDevice device)
         {
-            _setupAction.Invoke(device);
+            SetupAction.Invoke(device);
         }
 
         /// <summary>
@@ -387,7 +383,7 @@ namespace Baxter.Bullseye.MemoryCache
         /// <param name="device"> This is the supplied device updated in the cache </param>
         protected virtual void UpdatedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
         {
-            if (reason == EvictionReason.Replaced) _updateAction.Invoke(device);
+            if (reason == EvictionReason.Replaced) UpdateAction.Invoke(device);
         }
 
         /// <summary>
@@ -397,7 +393,7 @@ namespace Baxter.Bullseye.MemoryCache
         /// <param name="reason"> This is the supplied reason for why the device was removed from the cache </param>
         protected virtual void RemovedDeviceCallback(IBullseyeDevice device, EvictionReason reason)
         {
-            if (reason == EvictionReason.Removed) _evictionAction.Invoke(device);
+            if (reason == EvictionReason.Removed) EvictionAction.Invoke(device);
         }
 
         /// <summary>
@@ -420,19 +416,19 @@ namespace Baxter.Bullseye.MemoryCache
                 .RegisterPostEvictionCallback(
                     (evictedKey, value, reason, substate) =>
                     {
-                        if (reason == EvictionReason.Removed && _evictionAction != null)
+                        if (reason == EvictionReason.Removed && EvictionAction != null)
                         {
                             result = $"'{evictedKey}' was {reason}";
                             RemovedDeviceCallback(device, reason);
                         }
 
-                        if (reason == EvictionReason.Replaced && _updateAction != null)
+                        if (reason == EvictionReason.Replaced && UpdateAction != null)
                         {
                             result = $"'{evictedKey}' was {reason}";
                             UpdatedDeviceCallback(device, reason);
                         }
 
-                        //Logger.Error(e.ToString()); todo
+                        Logger.Info(result);
                         Console.WriteLine(result);
                     });
 
