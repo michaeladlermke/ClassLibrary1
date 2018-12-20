@@ -14,33 +14,29 @@ namespace Baxter.Bullseye.MemoryCache
         protected readonly Action<IBullseyeDevice> EvictionAction;
         protected readonly Action<IBullseyeDevice> SetupAction;
         protected readonly Action<IBullseyeDevice> UpdateAction;
-        protected readonly ILog Logger = LogManager.GetLogger(typeof(IBullseyeMemoryCache));
+        protected readonly ILogger<IBullseyeMemoryCache> Logger;
 
         public IMemoryCache Cache { get; set; }
         
-        //todo
-        // might want to split into two classes... 
-        // insert update delete
-        // maintain the list
-        
         #region Constructors
             
-        public BullseyeMemoryCache(IMemoryCache cache)
+        public BullseyeMemoryCache(IMemoryCache cache, ILogger<IBullseyeMemoryCache> logger)
         {
             try
             {
                 Cache = cache ?? throw new ArgumentNullException(nameof(cache));
+                Logger = logger;
             }
             catch (Exception e)
             {
-                Logger.Error("Null IMemoryCache is not allowed.", e);
                 Console.WriteLine(e);
+                Logger.LogError("Null IMemoryCache is not allowed.");
                 throw;
             }
         }
 
         public BullseyeMemoryCache(IMemoryCache cache, Action<IBullseyeDevice> preCallback,
-            Action<IBullseyeDevice> updateCallback, Action<IBullseyeDevice> evictionCallback)
+            Action<IBullseyeDevice> updateCallback, Action<IBullseyeDevice> evictionCallback, ILogger<IBullseyeMemoryCache> logger)
         {
             try
             {
@@ -48,11 +44,12 @@ namespace Baxter.Bullseye.MemoryCache
                 SetupAction = preCallback ?? throw new ArgumentNullException(nameof(preCallback));
                 UpdateAction = updateCallback ?? throw new ArgumentNullException(nameof(updateCallback));
                 EvictionAction = evictionCallback ?? throw new ArgumentNullException(nameof(evictionCallback));
+                Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
             catch (Exception e)
             {
-                Logger.Error("Null Arguments are not allowed.", e);
                 Console.WriteLine(e);
+                Logger.LogError("Null arguments are not allowed.");
                 throw;
             }
         }
@@ -99,9 +96,15 @@ namespace Baxter.Bullseye.MemoryCache
 
                 InsertDevice(device, seconds);
             }
-            catch (Exception e)
+            catch (Exception e) when (e.InnerException is ArgumentNullException)
             {
-                Logger.Error("", e);
+                Logger.LogError("Null device is not allowed.");
+                Console.WriteLine(e);
+                throw;
+            }
+            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            {
+                Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
@@ -130,9 +133,15 @@ namespace Baxter.Bullseye.MemoryCache
 
                 foreach (var device in list) AddDevice(device, seconds);
             }
-            catch (Exception e)
+            catch (Exception e) when (e.InnerException is ArgumentNullException)
             {
-                Logger.Error("", e);
+                Logger.LogError("Null list is not allowed.");
+                Console.WriteLine(e);
+                throw;
+            }
+            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            {
+                Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
@@ -150,29 +159,18 @@ namespace Baxter.Bullseye.MemoryCache
         /// <returns> This function returns a IBullseyeDevice Device. </returns>
         public IBullseyeDevice GetDevice(string key)
         {
-            try
+            if (key == null)
             {
-                if (key == null)
-                {
-                    throw new ArgumentNullException(nameof(key));
-                }
-
-                if (!Cache.TryGetValue(key, out string cacheEntry))
-                {
-                    return null;
-                }
-
-                var device = new BullseyeDevice(key, cacheEntry);
-                return device;
-            }
-            catch (Exception e)
-            {
-                Logger.Error("", e);
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
 
-            return null;
+            if (!Cache.TryGetValue(key, out string cacheEntry))
+            {
+                return null;
+            }
+
+            var device = new BullseyeDevice(key, cacheEntry);
+            return device;
         }
 
         /// <summary>
@@ -183,24 +181,13 @@ namespace Baxter.Bullseye.MemoryCache
         /// <returns> This function returns a IBullseyeDevice Device. </returns>
         public IBullseyeDevice GetDevice(IBullseyeDevice device)
         {
-            try
+            if (device == null)
             {
-                if (device == null)
-                {
-                    throw new ArgumentNullException(nameof(device));
-                }
-
-                var key = device.GetId();
-                return GetDevice(key);
-            }
-            catch (Exception e)
-            {
-                Logger.Error("", e);
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
 
-            return null;
+            var key = device.GetId();
+            return GetDevice(key);
         }
 
         #endregion
@@ -236,18 +223,22 @@ namespace Baxter.Bullseye.MemoryCache
                     {
                         UpdatedDeviceCallback(device, EvictionReason.Replaced);
                     }
+                    InsertDevice(device, seconds);
                 }
                 else
                 {
-                    ;
                     AddDevice(device, seconds);
                 }
-
-                InsertDevice(device, seconds);
             }
-            catch (Exception e)
+            catch (Exception e) when (e.InnerException is ArgumentNullException)
             {
-                Logger.Error("", e);
+                Logger.LogError("Null device is not allowed.");
+                Console.WriteLine(e);
+                throw;
+            }
+            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            {
+                Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
@@ -283,13 +274,13 @@ namespace Baxter.Bullseye.MemoryCache
                 }
                 else
                 {
-                    Logger.Info(key + " is not in cache and can't be removed.");
+                    Logger.LogInformation(key + " is not in cache and can't be removed. ");
                     Console.WriteLine(key + " is not in cache and can't be removed.");
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (e.InnerException is ArgumentNullException)
             {
-                Logger.Error("", e);
+                Logger.LogError("Null key is not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
@@ -317,17 +308,17 @@ namespace Baxter.Bullseye.MemoryCache
 
                     _cachedDeviceList.Remove(key);
                     Cache.Remove(key);
-                    //Logger.LogDebug(device.Id + " has been removed from the cache.");
+                    Logger.LogInformation(device.Id + "has been removed from the cache. ");
                 }
                 else
                 {
-                    //Logger.LogDebug(device.Id + " is not in the cache and can't be removed.");
+                    Logger.LogInformation(device.Id + " is not in the cache and can't be removed. ");
                     Console.WriteLine(device.Id + " is not in the cache and can't be removed.");
                 }
             }
-            catch (Exception e)
+            catch (Exception e) when (e.InnerException is ArgumentNullException)
             {
-                Logger.Error("", e);
+                Logger.LogError("Null device is not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
@@ -362,30 +353,21 @@ namespace Baxter.Bullseye.MemoryCache
 
             var foundDevices = new List<IBullseyeDevice>();
 
-            try
+            if (list == null)
             {
-                if (list == null)
-                {
-                    throw new ArgumentNullException(nameof(list));
-                }
-
-                foreach (var device in list)
-                {
-                    var key = device.Id;
-                    if (Cache.TryGetValue(key, out string cacheEntry))
-                    {
-                        foundDevices.Add(device);
-                    }
-                }
-
                 return foundDevices;
             }
-            catch (Exception e)
+
+            foreach (var device in list)
             {
-                Logger.Error("", e);
-                Console.WriteLine(e);
-                throw;
+                var key = device.Id;
+                if (Cache.TryGetValue(key, out string cacheEntry))
+                {
+                    foundDevices.Add(device);
+                }
             }
+
+            return foundDevices;
         }
 
 
@@ -420,8 +402,8 @@ namespace Baxter.Bullseye.MemoryCache
                             result = $"'{evictedKey}' was {reason}";
                             UpdatedDeviceCallback(device, reason);
                         }
-
-                        Logger.Info(result);
+                        
+                        Logger.LogInformation(result);
                         Console.WriteLine(result);
                     });
 

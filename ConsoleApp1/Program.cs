@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Baxter.Bullseye.MemoryCache;
 using Microsoft.Extensions.Caching.Memory;
 using log4net;
+using Microsoft.Extensions.Logging;
+using ILogger = log4net.Core.ILogger;
 
 namespace ConsoleApp1
 {
@@ -15,17 +17,22 @@ namespace ConsoleApp1
                 SizeLimit = 1024
             });
 
+            ILoggerFactory loggerFactory = new LoggerFactory();
+            var logger = loggerFactory.CreateLogger<BullseyeMemoryCache>();
+
+            logger.LogInformation("Bullseye Memory Cache Test");
+
             BullseyeDeviceHelper helper = new BullseyeDeviceHelper();
             try
             {
-                BullseyeMemoryCache nullCache = new BullseyeMemoryCache(null);
+                BullseyeMemoryCache nullCache = new BullseyeMemoryCache(null, logger);
             }
             catch(Exception e)
             {
                 Console.WriteLine("Throws exception: " + e);
             }
             
-            BullseyeMemoryCache testCache = new BullseyeMemoryCache(cache, helper.StartUpAction, helper.UpdateAction, helper.EvictionAction);
+            BullseyeMemoryCache testCache = new BullseyeMemoryCache(cache, helper.StartUpAction, helper.UpdateAction, helper.EvictionAction, logger);
 
             Console.WriteLine("Starting cache size: " + testCache.Count);
 
