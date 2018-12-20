@@ -24,13 +24,13 @@ namespace Baxter.Bullseye.MemoryCache
         {
             try
             {
+                Logger = logger ?? throw new ArgumentNullException(nameof(logger));
                 Cache = cache ?? throw new ArgumentNullException(nameof(cache));
-                Logger = logger;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Logger.LogError("Null IMemoryCache is not allowed.");
+                Logger?.LogError("Null arguments are not allowed.");
                 throw;
             }
         }
@@ -40,16 +40,16 @@ namespace Baxter.Bullseye.MemoryCache
         {
             try
             {
+                Logger = logger ?? throw new ArgumentNullException(nameof(logger));
                 Cache = cache ?? throw new ArgumentNullException(nameof(cache));
                 SetupAction = preCallback ?? throw new ArgumentNullException(nameof(preCallback));
                 UpdateAction = updateCallback ?? throw new ArgumentNullException(nameof(updateCallback));
                 EvictionAction = evictionCallback ?? throw new ArgumentNullException(nameof(evictionCallback));
-                Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Logger.LogError("Null arguments are not allowed.");
+                Logger?.LogError("Null arguments are not allowed.");
                 throw;
             }
         }
@@ -96,13 +96,13 @@ namespace Baxter.Bullseye.MemoryCache
 
                 InsertDevice(device, seconds);
             }
-            catch (Exception e) when (e.InnerException is ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException)
             {
                 Logger.LogError("Null device is not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
-            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            catch (Exception e) when (e is ArgumentOutOfRangeException)
             {
                 Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
@@ -131,15 +131,21 @@ namespace Baxter.Bullseye.MemoryCache
                     throw new ArgumentOutOfRangeException(nameof(seconds));
                 }
 
-                foreach (var device in list) AddDevice(device, seconds);
+                foreach (var device in list)
+                {
+                    if (device != null)
+                    {
+                        AddDevice(device, seconds);
+                    }
+                }
             }
-            catch (Exception e) when (e.InnerException is ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException)
             {
                 Logger.LogError("Null list is not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
-            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            catch (Exception e) when (e is ArgumentOutOfRangeException)
             {
                 Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
@@ -230,13 +236,13 @@ namespace Baxter.Bullseye.MemoryCache
                     AddDevice(device, seconds);
                 }
             }
-            catch (Exception e) when (e.InnerException is ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException)
             {
                 Logger.LogError("Null device is not allowed.");
                 Console.WriteLine(e);
                 throw;
             }
-            catch (Exception e) when (e.InnerException is ArgumentOutOfRangeException)
+            catch (Exception e) when (e is ArgumentOutOfRangeException)
             {
                 Logger.LogError("Non positive seconds are not allowed.");
                 Console.WriteLine(e);
@@ -278,7 +284,7 @@ namespace Baxter.Bullseye.MemoryCache
                     Console.WriteLine(key + " is not in cache and can't be removed.");
                 }
             }
-            catch (Exception e) when (e.InnerException is ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException)
             {
                 Logger.LogError("Null key is not allowed.");
                 Console.WriteLine(e);
@@ -316,7 +322,7 @@ namespace Baxter.Bullseye.MemoryCache
                     Console.WriteLine(device.Id + " is not in the cache and can't be removed.");
                 }
             }
-            catch (Exception e) when (e.InnerException is ArgumentNullException)
+            catch (Exception e) when (e is ArgumentNullException)
             {
                 Logger.LogError("Null device is not allowed.");
                 Console.WriteLine(e);
