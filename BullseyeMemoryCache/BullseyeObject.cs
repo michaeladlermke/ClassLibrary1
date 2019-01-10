@@ -3,13 +3,13 @@
 namespace Baxter.Bullseye.MemoryCache
 {
 
-    // class for a generic device Device
-    public class BullseyeDevice : IBullseyeDevice
+    // class for a generic @object Device
+    public class BullseyeObject : IBullseyeObject
     {
         public string Id { get; }
         public string Payload { get; }
 
-        public BullseyeDevice(string id, string info)
+        public BullseyeObject(string id, string info)
         {
             Id = id ?? throw new ArgumentNullException(nameof(id));
             Payload = info ?? throw new ArgumentNullException(nameof(info));
@@ -25,7 +25,7 @@ namespace Baxter.Bullseye.MemoryCache
             return Payload;
         }
 
-        public bool Equals(BullseyeDevice other)
+        public bool Equals(BullseyeObject other)
         {
             if (other == null)
             {

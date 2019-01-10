@@ -7,16 +7,15 @@ namespace Baxter.Bullseye.MemoryCache
     {
         IMemoryCache Cache { get; set; }
 
-        void AddDevice(IBullseyeDevice device, int seconds);
-        void AddMultipleDevices(List<IBullseyeDevice> list, int seconds);
+        void AddObject(IBullseyeObject @object, int seconds);
+        void AddMultipleObjects(List<IBullseyeObject> list, int seconds);
         long Count { get; }
 
-        List<IBullseyeDevice> CheckCacheForMultipleDevices(List<IBullseyeDevice> list);
-        IBullseyeDevice GetDevice(IBullseyeDevice device);
-        IBullseyeDevice GetDevice(string key);
-        void RemoveAllDevices();
-        void RemoveDevice(IBullseyeDevice device);
-        void RemoveDevice(string key);
-        void UpdateDevice(IBullseyeDevice device, int seconds);
+        List<IBullseyeObject> GetMultipleObjects(List<IBullseyeObject> list);
+        IBullseyeObject GetObject(IBullseyeObject @object);
+        IBullseyeObject GetObject(string key);
+        void RemoveAllObjects();
+        void RemoveObject(string key);
+        void UpdateObject(IBullseyeObject @object, int seconds);
     }
 }

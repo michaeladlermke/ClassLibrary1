@@ -8,4 +8,3 @@ C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\Baxter.Bullse
 C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\Baxter.Bullseye.MemoryCache.pdb
 C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\Baxter.Bullseye.MemoryCache.Properties.Resources.resources
 C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\Baxter.Bullseye.MemoryCache.csproj.GenerateResource.cache
-C:\repos\ClassLibrary1\BullseyeMemoryCache\obj\Debug\netcoreapp2.1\Baxter.Bullseye.MemoryCache.csprojAssemblyReference.cache

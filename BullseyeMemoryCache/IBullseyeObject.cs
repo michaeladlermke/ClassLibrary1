@@ -1,6 +1,6 @@
 ﻿namespace Baxter.Bullseye.MemoryCache
 {
-    public interface IBullseyeDevice
+    public interface IBullseyeObject
     {
         string Id { get; }
         string Payload { get; }
